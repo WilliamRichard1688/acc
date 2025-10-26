@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank Account Statement - Money Express Cambodia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Based on the provided style */
+        :root {
+            --primary: #004D7A;
+            --primary-light: #0077B6;
+            --secondary: #50C878;
+            --dark: #1A232F;
+            --light: #F0F4F7;
+            --background: #FFFFFF;
+            --border-color: #DDE1E6;
+            --text-muted: #5A6A78;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.12);
+            --input-bg-focus: #F5F9FC;
+            --danger: #D9534F;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', 'Khmer OS Battambang', Arial, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px var(--shadow-medium);
+        }
+
+        .header-section {
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle { font-size: 1rem; opacity: 0.95; font-weight: 400; }
+
+        .form-container { padding: 30px; }
+
+        .form-container > h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .form-section-header {
+            grid-column: 1 / -1;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            background-color: transparent;
+            padding: 15px 0;
+            margin-top: 30px;
+            margin-bottom: 0;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .form-section-header:first-of-type { margin-top: 0; }
+
+        .form-group { margin-bottom: 0; }
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper { position: relative; }
+
+        .input-wrapper input, .input-wrapper textarea {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1.05rem;
+            transition: all 0.2s ease-in-out;
+            background: var(--background);
+            color: var(--dark);
+            font-family: 'Inter', 'Khmer OS Battambang', sans-serif;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-wrapper input:focus, .input-wrapper textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background-color: var(--background);
+        }
+
+        button {
+            padding: 16px 32px;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            user-select: none;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px var(--shadow-medium);
+            border: none;
+        }
+
+        /* --- TRANSACTION STYLES (Desktop) --- */
+        #transaction-header-labels {
+            display: grid;
+            grid-template-columns: 1.5fr 4fr 1.5fr 1.5fr 0.5fr;
+            gap: 15px;
+            padding: 0 10px;
+            margin-bottom: 5px;
+            grid-column: 1 / -1;
+        }
+        #transaction-header-labels > div { font-weight: 600; color: var(--text-muted); font-size: 0.9rem; }
+
+        .transaction-row {
+            display: grid;
+            grid-template-columns: 1.5fr 4fr 1.5fr 1.5fr 0.5fr;
+            gap: 15px;
+            align-items: start;
+            margin-bottom: 10px;
+            grid-column: 1 / -1;
+        }
+        .transaction-row input { padding: 12px 15px; font-size: 1rem; }
+
+        .remove-item-btn {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            height: 48px;
+            line-height: 1;
+            font-size: 1.2rem;
+            margin: 0;
+            box-shadow: none;
+        }
+        .remove-item-btn:hover { background-color: #c9302c; }
+
+        .add-item-btn {
+            background: var(--secondary);
+            color: white;
+            margin-top: 15px;
+            grid-column: 1 / -1;
+        }
+        .add-item-btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .print-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            margin-top: 25px;
+        }
+        .print-btn:hover {
+            background-color: var(--primary-light);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* STATEMENT DESIGN STYLES */
+        .statement-container { margin-top: 40px; padding: 30px; background: white; display: none; }
+        .statement-box { border: 1px solid var(--border-color); padding: 30px; border-radius: 8px; background-color: #fcfdff; box-shadow: 0 4px 15px var(--shadow-light); }
+        .statement-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); padding-bottom: 20px; margin-bottom: 20px; }
+        .statement-header .business-info h3 { margin: 0; font-size: 1.8rem; color: var(--primary); }
+        .statement-header .business-info p { margin: 2px 0; color: var(--text-muted); }
+        .statement-header .statement-title h2 { margin: 0; font-size: 2.2rem; color: var(--text-muted); text-align: right; text-transform: uppercase; border-bottom: none; padding-bottom: 0; }
+        .statement-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .statement-details .bill-to p, .statement-details .statement-meta p { margin: 2px 0; font-size: 0.95rem; }
+        .statement-details .bill-to strong, .statement-details .statement-meta strong { color: var(--dark); }
+        .statement-details .bill-to h4, .statement-details .statement-meta h4 { color: var(--primary); margin-bottom: 10px; font-size: 1rem; }
+        .statement-details .statement-meta { text-align: right; }
+
+        /* MODIFIED AND NEW STYLES FROM INVOICE PRO */
+        .statement-items-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 30px; 
+            clear: both; /* Ensures table appears below the floated summary */
+        }
+        .statement-items-table thead { background-color: var(--primary); color: white; }
+        .statement-items-table th, .statement-items-table td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+        .statement-items-table th { text-align: left; font-weight: 600; }
+        .statement-items-table td { color: var(--dark); }
+        .statement-items-table .text-right { text-align: right; }
+
+        .statement-summary {
+            float: right;
+            width: 45%;
+            text-align: right;
+            margin-bottom: 20px; /* Space between summary and table */
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .summary-row.grand-total {
+            border-top: 2px solid var(--primary);
+            margin-top: 10px;
+            padding-top: 10px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .statement-footer { 
+            margin-top: 40px; /* Adjusted margin */
+            padding-top: 20px; 
+            border-top: 1px solid var(--border-color); 
+            clear: both; 
+        }
+        .statement-footer .thank-you { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.1rem; 
+            font-weight: 500; 
+            color: var(--text-muted); 
+        }
+
+
+        /* --- MOBILE OPTIMIZATIONS --- */
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .container { margin: 0; border-radius: 0; box-shadow: none; }
+            .form-container { padding: 15px; }
+            .header-section { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+            .subtitle { font-size: 0.9rem; }
+            .form-container > h2 { font-size: 1.5rem; margin-bottom: 20px; padding-bottom: 10px; }
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .form-section-header { margin-top: 20px; padding-bottom: 10px; font-size: 1.1rem; }
+
+            .input-wrapper input, .input-wrapper textarea {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+            button {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+
+            #transaction-header-labels { display: none; }
+            .transaction-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                background-color: var(--input-bg-focus);
+                margin-bottom: 15px;
+            }
+
+            .transaction-row .input-wrapper[data-label]:before {
+                content: attr(data-label);
+                display: block;
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: var(--primary);
+                margin-bottom: 5px;
+            }
+
+            .remove-item-btn { height: auto; padding: 10px; margin-top: 0; }
+            .add-item-btn { margin-top: 5px; }
+
+            .statement-box { padding: 15px; }
+            .statement-header, .statement-details { flex-direction: column; gap: 15px; }
+            .statement-header .business-info h3 { font-size: 1.5rem; }
+            .statement-header .statement-title h2, .statement-details .statement-meta { text-align: left; }
+            .statement-header .statement-title h2 { font-size: 2rem; }
+            .statement-summary { width: 100%; float: none; margin-top: 20px; text-align: right; } /* Full width on mobile */
+            .statement-items-table th, .statement-items-table td { padding: 8px 10px; font-size: 0.9rem; }
+            .statement-items-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; font-size: 10pt; }
+            .container, .statement-box { box-shadow: none; border: none; border-radius: 0; margin: 0; padding: 0; }
+            .statement-container { display: block !important; margin: 0; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header-section no-print">
+            <h1>Account Statement</h1>
+            <div class="subtitle">A summary of your account activity with Money Express Cambodia.</div>
+        </header>
+
+        <div class="form-container no-print">
+            <h2>Statement Details</h2>
+
+            <div class="form-grid">
+                <h3 class="form-section-header">Company Information</h3>
+                <div class="form-group full-width">
+                    <label for="companyName">ឈ្មោះក្រុមហ៊ុន (Company Name)</label>
+                    <div class="input-wrapper"><input type="text" id="companyName" oninput="generateStatement()" value="Money Express Cambodia"></div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="companyAddress">អាសយដ្ឋាន (Address)</label>
+                    <div class="input-wrapper"><input type="text" id="companyAddress" oninput="generateStatement()" value="National Road No. 1, Sangkat Niroth, Khan Chbar Ampov, Phnom Penh, 12357"></div>
+                </div>
+                 <div class="form-group">
+                    <label for="companyPhone">លេខទូរស័ព្ទ (Phone)</label>
+                    <div class="input-wrapper"><input type="tel" id="companyPhone" oninput="generateStatement()" value="089 202 808"></div>
+                </div>
+                <div class="form-group"></div>
+
+
+                <h3 class="form-section-header">Customer & Statement Details</h3>
+                <div class="form-group">
+                    <label for="customerName">ឈ្មោះអតិថិជន (Customer Name)</label>
+                    <div class="input-wrapper"><input type="text" id="customerName" oninput="generateStatement()" value="KITH SEYHA"></div>
+                </div>
+                <div class="form-group">
+                    <label for="customerAccount">លេខគណនី (Account No.)</label>
+                    <div class="input-wrapper"><input type="text" id="customerAccount" oninput="generateStatement()" value="MEC-00009899"></div>
+                </div>
+                <div class="form-group">
+                    <label for="customerID">លេខអតិថិជន (Customer ID)</label>
+                    <div class="input-wrapper"><input type="text" id="customerID" oninput="generateStatement()" value="CID-181044729"></div>
+                </div>
+                <div class="form-group"></div> 
+                <div class="form-group">
+                    <label for="customerPhone">លេខទូរស័ព្ទ (Phone)</label>
+                    <div class="input-wrapper"><input type="tel" id="customerPhone" oninput="generateStatement()" value="012 225 227"></div>
+                </div>
+                <div class="form-group">
+                    <label for="customerLocation">ទីតាំង (Location)</label>
+                    <div class="input-wrapper"><input type="text" id="customerLocation" oninput="generateStatement()" value="Phnom Penh, Cambodia"></div>
+                </div>
+                <div class="form-group">
+                    <label for="accountType">ប្រភេទគណនី (Account Type)</label>
+                    <div class="input-wrapper"><input type="text" id="accountType" oninput="generateStatement()" value="Savings Account"></div>
+                </div>
+                <div class="form-group"></div> 
+                <div class="form-group">
+                    <label for="statementDate">កាលបរិច្ឆេទ (Statement Date)</label>
+                    <div class="input-wrapper"><input type="text" id="statementDate" oninput="generateStatement()" value=""></div>
+                </div>
+                <div class="form-group">
+                    <label for="statementPeriod">អំឡុងពេល (Statement Period)</label>
+                    <div class="input-wrapper"><input type="text" id="statementPeriod" oninput="generateStatement()" value=""></div>
+                </div>
+
+                <h3 class="form-section-header">Account Transactions</h3>
+                <div class="form-group full-width">
+                    <label for="openingBalance">សមតុល្យដើមគ្រា (Opening Balance) ($)</label>
+                    <div class="input-wrapper"><input type="number" id="openingBalance" oninput="generateStatement()" value="550.00"></div>
+                </div>
+
+                <div id="transaction-header-labels">
+                    <div>Date</div>
+                    <div>Description</div>
+                    <div>Withdrawal ($)</div>
+                    <div>Deposit ($)</div>
+                    <div></div>
+                </div>
+                <div id="transactionsContainer" class="full-width">
+                    </div>
+                <button type="button" onclick="addTransactionRow()" class="add-item-btn">បន្ថែមប្រតិបត្តិការ (Add Transaction)</button>
+            </div>
+        </div>
+
+        <div id="statementContainer" class="statement-container">
+            <div id="statementContent"></div>
+            <button class="print-btn no-print" onclick="window.print()">បោះពុម្ពរបាយការណ៍ (Print Statement)</button>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(num) {
+            if (isNaN(num)) return '0.00';
+            return parseFloat(num).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function addTransactionRow(txn = { date: '', desc: '', withdrawal: 0, deposit: 0 }) {
+            const container = document.getElementById('transactionsContainer');
+            const row = document.createElement('div');
+            row.className = 'transaction-row';
+            row.innerHTML = `
+                <div class="input-wrapper" data-label="Date">
+                    <input type="text" class="txn-date" placeholder="YYYY-MM-DD" oninput="generateStatement()" value="${txn.date}">
+                </div>
+                <div class="input-wrapper" data-label="Description">
+                    <input type="text" class="txn-description" placeholder="Transaction Description" oninput="generateStatement()" value="${txn.desc}">
+                </div>
+                <div class="input-wrapper" data-label="Withdrawal / Out (-)">
+                    <input type="number" class="txn-withdrawal" value="${txn.withdrawal}" min="0" placeholder="0.00" oninput="generateStatement()">
+                </div>
+                <div class="input-wrapper" data-label="Deposit / In (+)">
+                    <input type="number" class="txn-deposit" value="${txn.deposit}" min="0" placeholder="0.00" oninput="generateStatement()">
+                </div>
+                <button type="button" class="remove-item-btn" onclick="removeTransactionRow(this)">×</button>
+            `;
+            container.appendChild(row);
+            generateStatement();
+        }
+
+        // === MODIFIED DEFAULT TRANSACTIONS ===
+        function addDefaultTransactions() {
+             const transactions = [
+                { date: '2025-10-05', desc: 'Cash Withdrawal', withdrawal: 200.00, deposit: 0 },
+                { date: '2025-10-15', desc: 'Cash Deposit', withdrawal: 0, deposit: 50.00 }
+            ];
+            transactions.forEach(txn => addTransactionRow(txn));
+        }
+        // === END OF MODIFICATION ===
+
+        function removeTransactionRow(button) {
+            button.closest('.transaction-row').remove();
+            generateStatement();
+        }
+
+        function generateStatement() {
+            // Get header values
+            const companyName = document.getElementById('companyName').value || 'N/A';
+            const companyAddress = document.getElementById('companyAddress').value || 'N/A';
+            const companyPhone = document.getElementById('companyPhone').value || 'N/A';
+            const customerName = document.getElementById('customerName').value || 'N/A';
+            const customerAccount = document.getElementById('customerAccount').value || 'N/A';
+            const customerID = document.getElementById('customerID').value || 'N/A';
+            const customerPhone = document.getElementById('customerPhone').value || 'N/A';
+            const statementDate = document.getElementById('statementDate').value || 'N/A';
+            const statementPeriod = document.getElementById('statementPeriod').value || 'N/A';
+
+            // === ADDED NEW FIELDS ===
+            const customerLocation = document.getElementById('customerLocation').value || 'N/A';
+            const accountType = document.getElementById('accountType').value || 'N/A';
+
+            // Get financial values
+            const openingBalance = parseFloat(document.getElementById('openingBalance').value) || 0;
+            let runningBalance = openingBalance;
+            let totalWithdrawals = 0;
+            let totalDeposits = 0;
+
+            let transactionsHTML = '';
+            const transactionRows = document.querySelectorAll('.transaction-row');
+
+            transactionRows.forEach(row => {
+                const date = row.querySelector('.txn-date').value || '-';
+                const description = row.querySelector('.txn-description').value || 'N/A';
+                const withdrawal = parseFloat(row.querySelector('.txn-withdrawal').value) || 0;
+                const deposit = parseFloat(row.querySelector('.txn-deposit').value) || 0;
+
+                totalWithdrawals += withdrawal;
+                totalDeposits += deposit;
+                // Calculate running balance for each row, starting from the opening balance
+                runningBalance = runningBalance - withdrawal + deposit;
+
+                transactionsHTML += `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${description}</td>
+                        <td class="text-right">${withdrawal > 0 ? formatCurrency(withdrawal) : '-'}</td>
+                        <td class="text-right">${deposit > 0 ? formatCurrency(deposit) : '-'}</td>
+                        <td class="text-right">${formatCurrency(runningBalance)}</td>
+                    </tr>
+                `;
+            });
+
+            // Recalculate the final balance based on totals to ensure accuracy
+            const closingBalance = openingBalance + totalDeposits - totalWithdrawals;
+
+            // --- MODIFIED HTML STRUCTURE (STATEMENT OUTPUT) ---
+            const statementHTML = `
+                <div class="statement-box">
+                    <header class="statement-header">
+                        <div class="business-info">
+                            <h3>${companyName}</h3>
+                            <p>${companyAddress}</p>
+                            <p>${companyPhone}</p>
+                        </div>
+                        <div class="statement-title"><h2>Account Statement</h2></div>
+                    </header>
+
+                    <section class="statement-details">
+                        <div class="bill-to">
+                            <h4>STATEMENT FOR</h4>
+                            <p><strong>${customerName}</strong></p>
+                            <p><strong>Phone:</strong> ${customerPhone}</p>
+                            <p><strong>Location:</strong> ${customerLocation}</p>
+                            <p><strong>Customer ID:</strong> ${customerID}</p>
+                            <p><strong>Account:</strong> ${customerAccount}</p>
+                            <p><strong>Account Type:</strong> ${accountType}</p>
+                        </div>
+                        <div class="statement-meta">
+                            <h4>STATEMENT DETAILS</h4>
+                            <p><strong>Statement Date:</strong> ${statementDate}</p>
+                            <p><strong>Period:</strong> ${statementPeriod}</p>
+                        </div>
+                    </section>
+
+                    <section class="statement-summary">
+                         <div class="summary-row">
+                            <span>Opening Balance</span>
+                            <span>${formatCurrency(openingBalance)} $</span>
+                        </div>
+                         <div class="summary-row">
+                            <span>Total Deposits</span>
+                            <span>${formatCurrency(totalDeposits)} $</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total Withdrawals</span>
+                            <span>-${formatCurrency(totalWithdrawals)} $</span>
+                        </div>
+                        <div class="summary-row grand-total">
+                            <span>CLOSING BALANCE</span>
+                            <span>${formatCurrency(closingBalance)} $</span>
+                        </div>
+                    </section>
+
+                    <table class="statement-items-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th class="text-right">Withdrawal/Out ($)</th>
+                                <th class="text-right">Deposit/In ($)</th>
+                                <th class="text-right">Balance ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody>${transactionsHTML}</tbody>
+                    </table>
+
+                    <footer class="statement-footer">
+                        <div class="thank-you"><p>Thank you for banking with Money Express Cambodia!</p></div>
+                    </footer>
+                </div>
+            `;
+            document.getElementById('statementContent').innerHTML = statementHTML;
+            document.getElementById('statementContainer').style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const periodOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+
+            // Set Statement Date
+            document.getElementById('statementDate').value = today.toLocaleDateString('en-US', dateOptions);
+
+            // Set Statement Period for the current month
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDayOfMonth = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(year, month + 1, 0);
+
+            const formattedFirstDay = firstDayOfMonth.toLocaleDateString('en-US', periodOptions);
+            const formattedLastDay = lastDayOfMonth.toLocaleDateString('en-US', periodOptions);
+
+            document.getElementById('statementPeriod').value = `${formattedFirstDay} - ${formattedLastDay}`;
+
+            addDefaultTransactions();
+            generateStatement();
+        });
+    </script>
+</body>
+</html>
